@@ -1,2 +1,2 @@
 # DeNovoHeterodimers
-Scripts and data deposition for de novo heterodimers manuscript
+Scripts used in this study
