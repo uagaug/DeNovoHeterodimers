@@ -1,2 +1,2 @@
 # DeNovoHeterodimers
-Scripts and data deposition for de novo heterodimers manuscript
+Raw spectra from native MS experiments
