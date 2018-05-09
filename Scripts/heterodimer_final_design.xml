@@ -1,0 +1,21 @@
+<ROSETTASCRIPTS>
+  <SCOREFXNS>
+    <ScoreFunction name="hard" weights="beta"/>
+  </SCOREFXNS>
+<RESIDUE_SELECTORS>          
+  <Layer name="hbnet_core" select_core="true" core_cutoff="3.6" />
+</RESIDUE_SELECTORS>
+<TASKOPERATIONS>
+</TASKOPERATIONS>
+<MOVERS>
+ConnectChainsMover name=closer chain_connections="[A+B,C],[B+A,C],[C+B,A],[B+C,A]" loopLengthRange="2,5"/>
+  <ConnectChainsMover name="closer" chain_connections="[A+D,B+C],[D+A,B+C],[A+D,C+B],[D+A,C+B],[A+C,B+D],[C+A,B+D],[A+C,D+B],[C+A,D+B]" loopLengthRange="2,5"/>
+</MOVERS>
+<PROTOCOLS>
+  #start by designing ideal loop, everything else Ala.  Necessary for network search and minimization!!!!
+  Add mover=transform_sc/>
+  <Add mover_name="closer"/>
+  Add mover=hbnet_interf/>
+  Add mover=MPM/>
+</PROTOCOLS>
+</ROSETTASCRIPTS>

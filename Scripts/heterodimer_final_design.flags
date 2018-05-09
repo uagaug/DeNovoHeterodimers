@@ -1,0 +1,15 @@
+-database /gscratch/baker/brunette/src/Rosetta_master/main/database/
+-beta
+-in:file:fullatom
+-multi_cool_annealer 10
+-renumber_pdb 1
+-overwrite
+-out::file::pdb_comments
+-run:preserve_header
+-chemical:exclude_patches LowerDNA  UpperDNA Cterm_amidation VirtualBB ShoveBB VirtualDNAPhosphate VirtualNTerm CTermConnect sc_orbitals pro_hydroxylated_case1 pro_hydroxylated_case2 ser_phosphorylated thr_phosphorylated  tyr_phosphorylated tyr_sulfated lys_dimethylated lys_monomethylated  lys_trimethylated lys_acetylated glu_carboxylated cys_acetylated tyr_diiodinated N_acetylated C_methylamidated MethylatedProteinCterm
+-parser:protocol /gscratch/baker/zibochen/scripts/xml_and_flags/heterodimer_final_design.xml
+-out:prefix closed_ 
+-overwrite 
+-no_nstruct_label 
+-mute all 
+-indexed_structure_store:fragment_store /gscratch/baker/brunette/DBs/hdf5/ss_grouped_vall_helix_shortLoop.h5
