@@ -1,3 +1,4 @@
+Searches for HBNets in heptads
 <ROSETTASCRIPTS>
 	<SCOREFXNS>
 	  	<ScoreFunction name="beta" weights="beta_cst"/>
