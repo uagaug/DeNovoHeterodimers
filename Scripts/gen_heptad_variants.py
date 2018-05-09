@@ -1,5 +1,6 @@
 #!/usr/local/bin/python2.7
 #given two helical bundles with 5 heptads each, could the middle heptad from Bundle 1 align to the outer 4 heptads of Bundle 2?
+#generating heptad ordering variants for TMalign
 from os import system,popen
 import itertools
 from sys import argv
