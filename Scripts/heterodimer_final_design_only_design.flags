@@ -1,0 +1,34 @@
+-database /suppscr/baker/sboyken/devel_rosetta/Rosetta/main/database
+-beta
+-in:file:fullatom
+-multi_cool_annealer 10
+-renumber_pdb 1
+-overwrite
+-out::file::pdb_comments
+-run:preserve_header
+-chemical:exclude_patches LowerDNA  UpperDNA Cterm_amidation VirtualBB ShoveBB VirtualDNAPhosphate VirtualNTerm CTermConnect sc_orbitals pro_hydroxylated_case1 pro_hydroxylated_case2 ser_phosphorylated thr_phosphorylated  tyr_phosphorylated tyr_sulfated lys_dimethylated lys_monomethylated  lys_trimethylated lys_acetylated glu_carboxylated cys_acetylated tyr_diiodinated N_acetylated C_methylamidated MethylatedProteinCterm
+-parser:protocol /gscratch/baker/zibochen/scripts/xml_and_flags/heterodimer_final_design_only_design.xml
+#-no_optH false #170823 removed becasue SB said they are not useful
+#-optH_MCA true #170823 removed becasue SB said they are not useful
+#-flip_HNQ		#170823 removed becasue SB said they are not useful
+#-holes:dalphaball /home/sheffler/bin/DAlphaBall.gcc
+-holes:dalphaball /gscratch/baker/zibochen/scripts/DAlphaBall.gcc
+
+#to make the satisfier work include the following flags
+-lk_bridge_cutoff -0.01
+-lk_ball_water_fade 1.0
+#to prevent waters from being virtualized, even if score poorly
+-include_vrt false
+
+#for packing with waters
+-wat_rot_sampling 30.0 #default is 30
+-lk_ball_bridge_angle_widthscale 1.0
+-lk_ball_waters_sp2 2.828 134.5 0.0 2.828 134.5 180.0
+-lk_ball_waters_sp3  2.828 109.3 120.0 2.828 109.3 240.0
+-lk_ball_waters_ring 2.828 180 0
+-lk_ball_waters_donor 2.828
+-lk_ball_ramp_width_A2 3.709
+-lk_ball_overlap_width_A2 2.811
+
+#-mute all
+#-unmute protocols.hbnet protocols.jd2
