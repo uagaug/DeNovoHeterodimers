@@ -12,3 +12,7 @@ rosetta_scripts.hdf5.linuxgccrelease @loop_closure.flags
 
 ## Final design
 rosetta_scripts.hdf5.linuxgccrelease @heterodimer_final_design_only_design.flags -in:file:s $in_pdb
+
+## Native MS data analysis
+To identify exchanged monomers: python native_MS_mixing_data_analysis.py mass_tolerance time_cutoff ms_list CID_mass_list theoretical_mass_list
+To quantify exchanged monomers: python native_MS_mixing_data_quantitation.py theoretical_mass_list Non-denaturing_data1 Non-denaturing_data2 Denaturing_data1 Denaturing_data2
