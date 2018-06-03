@@ -1,0 +1,239 @@
+<ROSETTASCRIPTS>
+	<SCOREFXNS>
+		<ScoreFunction name="sfxn" weights="beta_nov15.wts" />
+		<ScoreFunction name="sfxn_cen" weights="fldsgn_cen">
+			<Reweight scoretype="hbond_sr_bb" weight="1.0" />
+			<Reweight scoretype="hbond_lr_bb" weight="1.0" />
+			<Reweight scoretype="atom_pair_constraint" weight="1.0" />
+			<Reweight scoretype="angle_constraint" weight="1.0" />
+			<Reweight scoretype="dihedral_constraint" weight="1.0" />
+		</ScoreFunction>
+		<ScoreFunction name="net_atr_net_sol"  weights="empty.wts">
+			<Reweight scoretype="fa_atr" weight="1.0" />
+			<Reweight scoretype="fa_rep" weight="0.55" /> 
+			<Reweight scoretype="fa_sol" weight="1.0" />
+			<Reweight scoretype="fa_elec" weight="1.0" />
+		</ScoreFunction>
+		<ScoreFunction name="TotalHydrophobic" weights="/home/zibochen/plots/1024/180423_all_score/total_hydrophobic_weights_revised.wts" />
+	</SCOREFXNS>
+	<RESIDUE_SELECTORS>
+		<Chain name="chainA" chains="A"/>
+	</RESIDUE_SELECTORS>
+	<TASKOPERATIONS>
+		<LayerDesign name="all_layers" layer="core_boundary_surface_Nterm_Cterm" use_sidechain_neighbors="True" verbose="true" />
+		<LayerDesign name="layer_core_boundary_SCN" layer="core_boundary" pore_radius="2.0" verbose="true" use_sidechain_neighbors="True" core="4" />
+		<LayerDesign name="layer_core_SCN" layer="core" verbose="true" use_sidechain_neighbors="True" core="4" />
+		<LayerDesign name="layer_core_SASA" layer="core" core="20" pore_radius="2.0" verbose="true" />
+	</TASKOPERATIONS>
+	<FILTERS>
+		### residue count: count_all, non-polar, ala, core, percent_core
+		<ResidueCount name="res_count_all" max_residue_count="9999" confidence="0"/>
+		<ResidueCount name="np_count" residue_types="PHE,MET,ILE,LEU,TYR,TRP,VAL"  confidence="0"/>
+		<ResidueCount name="AlaCount" residue_types="ALA" max_residue_count="6" confidence="0"/>
+		<ResidueCount name="res_count_core_SCN" task_operations="layer_core_SCN" max_residue_count="9999" confidence="0"/>
+		<CalculatorFilter name="percent_core_SCN" equation="- rescount_coreSCN / (rescount3 + 0.01)" threshold="-0.1" confidence="0" >
+			<Var name="rescount3" filter="res_count_all"/>
+			<Var name="rescount_coreSCN" filter="res_count_core_SCN"/>
+		</CalculatorFilter>
+		<ResidueCount name="res_count_core_SASA" task_operations="layer_core_SASA" max_residue_count="9999" confidence="0"/>
+		<CalculatorFilter name="percent_core_SASA" equation="- rescount_coreSASA / (rescount3 + 0.01)" threshold="-0.1" confidence="0" >
+			<Var name="rescount3" filter="res_count_all"/>
+			<Var name="rescount_coreSASA" filter="res_count_core_SASA"/>
+		</CalculatorFilter>
+
+		### scorefxn score terms
+		<ScoreType name="total_score" scorefxn="sfxn" threshold="0"/>
+		<CalculatorFilter name="score_per_res" equation="total_score / res" threshold="-3.2" confidence="0">
+			<Var name="total_score" filter="total_score"/>
+			<Var name="res" filter="res_count_all"/>
+		</CalculatorFilter>
+		<ScoreType name="fa_atr" scorefxn="sfxn" threshold="0" score_type="fa_atr" />
+		<CalculatorFilter name="fa_atr_per_res" equation="fa_atr_score / res" threshold="-5.2" confidence="0">
+			<Var name="fa_atr_score" filter="fa_atr"/>
+			<Var name="res" filter="res_count_all"/>
+		</CalculatorFilter>
+		<ScoreType name="net_atr_net_sol" score_type="total_score" scorefxn="net_atr_net_sol" confidence="0" threshold="0" />
+		<CalculatorFilter name="net_atr_net_sol_per_res" equation="net_atr_net_sol_score / res" threshold="-3.15" confidence="0">
+			<Var name="net_atr_net_sol_score" filter="net_atr_net_sol"/>
+			<Var name="res" filter="res_count_all"/>
+		</CalculatorFilter>
+		<ScoreType name="total_score_cen" score_type="total_score" scorefxn="sfxn_cen" confidence="0" threshold="0" />
+		<CalculatorFilter name="total_score_cen_per_res" equation="total_score_cen_score / res" threshold="-3.15" confidence="0">
+			<Var name="total_score_cen_score" filter="total_score_cen"/>
+			<Var name="res" filter="res_count_all"/>
+		</CalculatorFilter>
+		### beta-sheet topology
+		<ScoreType name="hbond_sheet" scorefxn="sfxn" score_type="hbond_lr_bb" threshold="0"/>
+		<CalculatorFilter name="hbond_sheet_per_res" equation="hbond_lr / rescount" threshold="-0.30" confidence="0">
+			<Var name="hbond_lr" filter="hbond_sheet"/>
+			<Var name="rescount" filter="res_count_all"/>
+		</CalculatorFilter>
+
+		### single score term
+		<ScoreType name="cart_bonded" scorefxn="sfxn" score_type="cart_bonded" threshold="0" confidence="0" />
+		<ScoreType name="dslf_fa13" scorefxn="sfxn" score_type="dslf_fa13" threshold="0" confidence="0" />>
+		<ScoreType name="fa_dun" scorefxn="sfxn" score_type="fa_dun" threshold="0" confidence="0" />
+		<ScoreType name="fa_elec" scorefxn="sfxn" score_type="fa_elec" threshold="0" confidence="0" />
+		<ScoreType name="fa_intra_rep" scorefxn="sfxn" score_type="fa_intra_rep" threshold="0" confidence="0" />
+		<ScoreType name="fa_intra_sol_xover4" scorefxn="sfxn" score_type="fa_intra_sol_xover4" threshold="0" confidence="0" />
+		<ScoreType name="fa_rep" scorefxn="sfxn" score_type="fa_rep" threshold="0" confidence="0" />
+		<ScoreType name="fa_sol" scorefxn="sfxn" score_type="fa_sol" threshold="0" confidence="0" />
+		<ScoreType name="hbond_bb_sc" scorefxn="sfxn" score_type="hbond_bb_sc" threshold="0" confidence="0" />
+		<ScoreType name="hbond_sc" scorefxn="sfxn" score_type="hbond_sc" threshold="0" confidence="0" />
+		<ScoreType name="hbond_sr_bb" scorefxn="sfxn" score_type="hbond_sr_bb" threshold="0" confidence="0" />	
+		<ScoreType name="lk_ball_wtd" scorefxn="sfxn" score_type="lk_ball_wtd" threshold="0" confidence="0" />
+		<ScoreType name="omega" scorefxn="sfxn" score_type="omega" threshold="0" confidence="0" />
+		<ScoreType name="p_aa_pp" scorefxn="sfxn" score_type="p_aa_pp" threshold="0" confidence="0" />
+		<ScoreType name="rama_prepro" scorefxn="sfxn" score_type="rama_prepro" threshold="0" confidence="0" />
+		<ScoreType name="ref" scorefxn="sfxn" score_type="ref" threshold="0" confidence="0" />
+		<ScoreType name="yhh_planarity" scorefxn="sfxn" score_type="yhh_planarity" threshold="0" confidence="0" />
+
+		### averagedegree
+		<AverageDegree name="degree" distance_threshold="8" confidence="0" />
+		<AverageDegree name="degree_core_SCN" task_operations="layer_core_SCN" distance_threshold="8" confidence="0" />
+		<AverageDegree name="degree_core_SASA" task_operations="layer_core_SASA" distance_threshold="8" confidence="0" />
+
+		
+		### atomic contact
+		<AtomicContactCount name="contact" confidence="1"/>
+		<AtomicContactCount name="contact_core_SCN" task_operations="layer_core_SCN" confidence="0" />
+		<AtomicContactCount name="contact_core_SASA" task_operations="layer_core_SASA" confidence="0" />
+		
+		### cavity, net charge, boltz
+		<Holes name="holes" confidence="0"/>
+		<CavityVolume name="cavity" confidence="0"/>
+		<PackStat name="packable" confidence="0" />
+		<NetCharge name="net_charge" min="-100" max="100" chain="1" />
+		<RotamerBoltzmannWeight name="rotamer_boltz_core_avg"  skip_ala_scan="1" no_modified_ddG="1" confidence="0" unbound="0" />
+		<RotamerBoltzmannWeight2 name="rotamer_boltz2" scorefxn="sfxn" probability_type="BOLTZMANN_SUM" score_type="MEAN_PROBABILITY"  />
+
+		### exposed,buried hydrophobics, polar, sasa
+		<TotalSasa name="exposed_total" confidence="0"/>
+		<TotalSasa name="exposed_polars" confidence="0" polar="True" />
+		<TotalSasa name="exposed_hydrophobics" confidence="0" hydrophobic="True" upper_threshold="999999" />
+		<ScoreType name="total_hydrophobic" scorefxn="TotalHydrophobic" threshold="0" confidence="0"/>
+		<CalculatorFilter name="buried_np" equation="total - exposed" threshold="1" confidence="0">
+			<Var name="total" filter="total_hydrophobic"/>
+			<Var name="exposed" filter="exposed_hydrophobics"/>
+		</CalculatorFilter>
+		<CalculatorFilter name="buried_np_per_res" equation="buried / res" threshold="118" confidence="0">
+			<Var name="buried" filter="buried_np"/>
+			<Var name="res" filter="res_count_all"/>
+		</CalculatorFilter>
+		<CalculatorFilter name="exposed_is_np" equation="exposed / total" threshold="1" confidence="0">
+			<VAR name="total" filter="exposed_total"/>
+			<VAR name="exposed" filter="exposed_hydrophobics"/>
+		</CalculatorFilter>
+		<CalculatorFilter name="buried_over_exposed" equation="buried / (exposed+0.01)" threshold="1" confidence="0" >
+			<VAR name="buried" filter="buried_np"/>
+			<VAR name="exposed" filter="exposed_hydrophobics"/>
+		</CalculatorFilter>
+		<CalculatorFilter name="buried_minus_exposed" equation="buried - exposed" threshold="1" confidence="0" >
+			<VAR name="buried" filter="buried_np"/>
+			<VAR name="exposed" filter="exposed_hydrophobics"/>
+		</CalculatorFilter>
+
+
+		### shape complementary
+		<SSShapeComplementarity name="ss_sc" verbose="0" confidence="0" />
+		<SSShapeComplementarity name="helix_sc" verbose="1" loops="0" helices="1" confidence="0" />
+		<SSShapeComplementarity name="loop_sc" verbose="1" loops="1" helices="0" confidence="0" />
+
+		<SSPrediction name="mismatch_probability" confidence="0" cmd="/software/psipred3/runpsipred_single" use_probability="1" mismatch_probability="1" use_svm="0" />
+		<SecondaryStructureHasResidue name="one_core_each" secstruct_fraction_threshold="1.0" res_check_task_operations="layer_core_SCN" required_restypes="VILMFYW" nres_required_per_secstruct="1" filter_helix="1" filter_sheet="1" filter_loop="0" min_helix_length="4" min_sheet_length="3" min_loop_length="1" confidence="0" />
+		<SecondaryStructureHasResidue name="two_core_each" secstruct_fraction_threshold="1.0" res_check_task_operations="layer_core_SCN" required_restypes="VILMFYW" nres_required_per_secstruct="2" filter_helix="1" filter_sheet="1" filter_loop="0" min_helix_length="4" min_sheet_length="3" min_loop_length="1" confidence="0" />
+		<SecondaryStructureHasResidue name="ss_contributes_core" secstruct_fraction_threshold="1.0" res_check_task_operations="layer_core_boundary_SCN" required_restypes="VILMFYW" nres_required_per_secstruct="1" filter_helix="1" filter_sheet="1" filter_loop="0" min_helix_length="4" min_sheet_length="3" min_loop_length="1" confidence="0" />
+		<SSPrediction name="sspred_overall" cmd="/software/psipred3/runpsipred_single" use_probability="0" use_svm="0" threshold="0.85" confidence="0" />
+
+		### buns
+		BuriedUnsatHbonds3 name="buns_all_heavy" scorefxn="sfxn" use_sc_neighbors="true" use_reporter_behavior="true" report_all_heavy_atom_unsats="true" residue_surface_cutoff="15.0" ignore_surface_res="true" print_out_info_to_pdb="true" confidence="0" />
+		BuriedUnsatHbonds3 name="buns_sc_heavy" scorefxn="sfxn" use_sc_neighbors="true" use_reporter_behavior="true" report_sc_heavy_atom_unsats="true" residue_surface_cutoff="15.0" ignore_surface_res="true" print_out_info_to_pdb="true" confidence="0"/>
+		BuriedUnsatHbonds3 name="buns_bb_heavy" scorefxn="sfxn" use_sc_neighbors="true" use_reporter_behavior="true" report_bb_heavy_atom_unsats="true" residue_surface_cutoff="15.0" ignore_surface_res="true" print_out_info_to_pdb="true" confidence="0"/>
+	</FILTERS>
+	<MOVERS>
+		<Dssp name="dssp" reduced_IG_as_L="1" />
+	</MOVERS>
+	<APPLY_TO_POSE>
+	</APPLY_TO_POSE>
+	<PROTOCOLS>
+		<Add mover="dssp" />
+
+		### filter res count
+		<Add filter="res_count_all" />
+		<Add filter="np_count" />
+		<Add filter="AlaCount" />
+		<Add filter="res_count_core_SCN" />
+		<Add filter="percent_core_SCN" />
+		<Add filter="res_count_core_SASA" />
+		<Add filter="percent_core_SASA" />
+		### scoring terms, per res
+		<Add filter="total_score" />
+		<Add filter="score_per_res" />
+		<Add filter="fa_atr" />
+		<Add filter="fa_atr_per_res" />
+		<Add filter="net_atr_net_sol" />
+		<Add filter="net_atr_net_sol_per_res" />
+		<Add filter="total_score_cen" />
+		<Add filter="total_score_cen_per_res" />
+		<Add filter="hbond_sheet" />
+		<Add filter="hbond_sheet_per_res" />
+		### single score term
+		<Add filter="cart_bonded" />
+		<Add filter="dslf_fa13" />
+		<Add filter="fa_dun" />
+		<Add filter="fa_elec" />
+		<Add filter="fa_intra_rep" />
+		<Add filter="fa_intra_sol_xover4" />
+		<Add filter="fa_rep" />
+		<Add filter="fa_sol" />
+		<Add filter="hbond_bb_sc" />
+		<Add filter="hbond_sc" />
+		<Add filter="hbond_sr_bb" />
+		<Add filter="lk_ball_wtd" />
+		<Add filter="omega" />
+		<Add filter="p_aa_pp" />
+		<Add filter="rama_prepro" />
+		<Add filter="ref" />
+		<Add filter="yhh_planarity" />
+		### degree
+		<Add filter="degree" />
+		<Add filter="degree_core_SCN" />
+		<Add filter="degree_core_SASA" />
+		### contact
+		<Add filter="contact" />
+		<Add filter="contact_core_SCN" />
+		<Add filter="contact_core_SASA" />
+		### cavity, net charge, boltz
+		<Add filter="holes" />
+		<Add filter="cavity" />
+		<Add filter="packable" />
+		<Add filter="net_charge" />
+		<Add filter="rotamer_boltz_core_avg" />
+		<Add filter="rotamer_boltz2" />
+		### exposed,buried hydrophobics, polar, sasa
+		<Add filter="exposed_total" />
+		<Add filter="exposed_polars" />
+		<Add filter="exposed_hydrophobics" />
+		<Add filter="total_hydrophobic" />
+		<Add filter="buried_np" />
+		<Add filter="buried_np_per_res" />
+		<Add filter="exposed_is_np" />
+		<Add filter="buried_over_exposed" />
+		<Add filter="buried_minus_exposed" />
+		### shape complementary
+		<Add filter="ss_sc" />
+		<Add filter="helix_sc" />
+		<Add filter="loop_sc" />
+		### ss probility
+		<Add filter="mismatch_probability" />
+		<Add filter="one_core_each" />
+		<Add filter="two_core_each" />
+		<Add filter="ss_contributes_core" />
+		<Add filter="sspred_overall" />
+		### buns
+		Add filter="buns_all_heavy" />
+		Add filter="buns_sc_heavy" />
+		Add filter="buns_bb_heavy" />
+	</PROTOCOLS>
+	<OUTPUT />
+</ROSETTASCRIPTS>
