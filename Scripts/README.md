@@ -19,3 +19,6 @@ rosetta_scripts.hdf5.linuxgccrelease @heterodimer_final_design_only_design.flags
 
 ## Script for NUS processing (4D-HNCH-TOCSY)
 NMR_process.sh
+
+## Rosetta xml for scoring designs
+scoring_script.xml
