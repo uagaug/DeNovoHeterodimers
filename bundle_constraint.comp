@@ -1,0 +1,32 @@
+PENALTY_DEFINITION
+TYPE MET                    #We're counting alanines
+ABSOLUTE 1
+DELTA_START -1              #The start of the range of penalty values that we're specifiying is 1 less than the desired number
+DELTA_END 1                 #The end of the range of penalty values that we're specifiying is 1 more than the desired number
+PENALTIES 0 4.0 20.0           #These are the penalties for having 1 less alanine than desired, the desired number, and one more alanine than desi
+red.
+BEFORE_FUNCTION CONSTANT    #If we have less than 1 fewer alanines than desired, the penalties remain constant (at zero).
+AFTER_FUNCTION QUADRATIC    #If we have more than 1 more alanine than desired, the penalties ramp up quadratically.
+END_PENALTY_DEFINITION
+
+PENALTY_DEFINITION
+TYPE ALA                    #We're counting alanines
+FRACTION 0.06
+FRACT_DELTA_START -0.06              #The start of the range of penalty values that we're specifiying is 1 less than the desired number
+FRACT_DELTA_END 0.02                 #The end of the range of penalty values that we're specifiying is 1 more than the desired number
+PENALTIES 0 0 20.0           #These are the penalties for having 1 less alanine than desired, the desired number, and one more alanine than desire
+d.
+BEFORE_FUNCTION CONSTANT    #If we have less than 1 fewer alanines than desired, the penalties remain constant (at zero).
+AFTER_FUNCTION QUADRATIC    #If we have more than 1 more alanine than desired, the penalties ramp up quadratically.
+END_PENALTY_DEFINITION
+
+PENALTY_DEFINITION
+TYPE PHE                    #We're counting alanines
+ABSOLUTE 2
+DELTA_START -1              #The start of the range of penalty values that we're specifiying is 1 less than the desired number
+DELTA_END 1                 #The end of the range of penalty values that we're specifiying is 1 more than the desired number
+PENALTIES 0 4.0 20.0           #These are the penalties for having 1 less alanine than desired, the desired number, and one more alanine than desi
+red.
+BEFORE_FUNCTION CONSTANT    #If we have less than 1 fewer alanines than desired, the penalties remain constant (at zero).
+AFTER_FUNCTION QUADRATIC    #If we have more than 1 more alanine than desired, the penalties ramp up quadratically.
+END_PENALTY_DEFINITION
